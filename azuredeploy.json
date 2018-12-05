@@ -21,7 +21,7 @@
         "functionAppName": "[concat(variables('prefix'),'fa')]",
         "applicationInsightsName": "[concat(variables('prefix'),'ai')]",
         "storageAccountName": "[concat(variables('prefix'),'st')]",
-        "repoUrl": "https://github.com/keesschollaart81/CaseOnline.Azure.WebJobs.Extensions.Mqtt/",
+        "repoUrl": "https://github.com/keesschollaart81/CaseOnline.Azure.WebJobs.Extensions.Mqtt.Example/",
         "branch": "master"
     },
     "resources": [
@@ -75,7 +75,7 @@
                 },
                 {
                   "name": "Project",
-                  "value": "src/ExampleFunctions/"
+                  "value": "src/"
                 },
                 {
                     "name": "FUNCTIONS_WORKER_RUNTIME",
