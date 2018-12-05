@@ -1,0 +1,129 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "siteName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the function app that you wish to create."
+            }
+        },
+        "MqttConnectionString": {
+            "type": "string",
+            "metadata": {
+                "description": "The connectionstring to the MQTT server. More info on the format of this connectionstring here: https://github.com/keesschollaart81/CaseOnline.Azure.WebJobs.Extensions.Mqtt/wiki/Getting-started#the-connectionstring"
+            }
+        }
+    },
+    "variables": {
+        "prefix": "[parameters('siteName')]",
+        "functionHostingplanAppName": "[concat(variables('prefix'),'sf')]",
+        "functionAppName": "[concat(variables('prefix'),'fa')]",
+        "applicationInsightsName": "[concat(variables('prefix'),'ai')]",
+        "storageAccountName": "[concat(variables('prefix'),'st')]",
+        "repoUrl": "https://github.com/keesschollaart81/CaseOnline.Azure.WebJobs.Extensions.Mqtt/",
+        "branch": "master"
+    },
+    "resources": [
+        {
+          "type": "Microsoft.Storage/storageAccounts",
+          "sku": {
+            "name": "Standard_LRS",
+            "tier": "Standard"
+          },
+          "kind": "Storage",
+          "name": "[variables('storageAccountName')]",
+          "apiVersion": "2016-01-01",
+          "location": "[resourceGroup().location]",
+          "properties": {},
+          "dependsOn": []
+        },
+        {
+          "type": "Microsoft.Web/serverfarms",
+          "apiVersion": "2018-02-01",
+          "name": "[variables('functionHostingplanAppName')]",
+          "location": "[resourceGroup().location]",
+          "kind": "app",
+          "sku": {
+            "name": "B1"
+          },
+          "properties": {
+            "name": "[variables('functionHostingplanAppName')]"
+          }
+        },
+        {
+          "type": "Microsoft.Web/sites",
+          "apiVersion": "2018-02-01",
+          "name": "[variables('functionAppName')]",
+          "location": "[resourceGroup().location]",
+          "kind": "functionapp",
+          "properties": {
+            "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('functionHostingplanAppName'))]",
+            "siteConfig": {
+              "appSettings": [
+                {
+                  "name": "AzureWebJobsDashboard",
+                  "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')),'2015-05-01-preview').key1)]"
+                },
+                {
+                  "name": "AzureWebJobsStorage",
+                  "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')),'2015-05-01-preview').key1)]"
+                },
+                {
+                  "name": "FUNCTIONS_EXTENSION_VERSION",
+                  "value": "~V2"
+                },
+                {
+                  "name": "Project",
+                  "value": "src/ExampleFunctions/"
+                },
+                {
+                    "name": "FUNCTIONS_WORKER_RUNTIME",
+                    "value": "dotnet"
+                },
+                {
+                  "name": "MqttConnection",
+                  "value": "[parameters('MqttConnectionString')]"
+                },
+                {
+                  "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                  "value": "[reference(resourceId('Microsoft.Insights/components', variables('applicationInsightsName')), '2014-04-01').InstrumentationKey]"
+                }
+              ]
+            }
+          },
+          "resources": [
+              {
+                  "apiVersion": "2015-08-01",
+                  "name": "web",
+                  "type": "sourcecontrols",
+                  "dependsOn": [
+                      "[resourceId('Microsoft.Web/Sites', variables('functionAppName'))]"
+                  ],
+                  "properties": {
+                      "RepoUrl": "[variables('repoURL')]",
+                      "branch": "[variables('branch')]",
+                      "IsManualIntegration": true
+                  }
+              }
+          ],
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/serverfarms', variables('functionHostingplanAppName'))]",
+            "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
+            "[resourceId('microsoft.insights/components', variables('applicationInsightsName'))]"
+          ]
+        },
+        {
+          "type": "microsoft.insights/components",
+          "kind": "Node.JS",
+          "name": "[variables('applicationInsightsName')]",
+          "apiVersion": "2014-04-01",
+          "location": "[resourceGroup().location]",
+          "tags": {},
+          "properties": {
+            "ApplicationId": "[variables('applicationInsightsName')]"
+          },
+          "dependsOn": []
+        }
+    ]
+}
