@@ -1,2 +1,4 @@
-# CaseOnline.Azure.WebJobs.Extensions.Mqtt.Example
-An example implementation of the MQTT Bindings for Azure Functions
+# Example for MQTT with Azure Functions
+An example implementation of the MQTT Bindings for Azure Functions as listed in [https://serverlesslibrary.net/](https://serverlesslibrary.net/).
+
+If you're interested in the MQTT Bindings checkout this repository: [https://github.com/keesschollaart81/CaseOnline.Azure.WebJobs.Extensions.Mqtt(https://github.com/keesschollaart81/CaseOnline.Azure.WebJobs.Extensions.Mqtt)]!
