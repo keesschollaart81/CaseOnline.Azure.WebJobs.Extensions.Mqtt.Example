@@ -4,4 +4,4 @@ This repository contains an example implementation of the MQTT Bindings for Azur
 
 If you're interested in the MQTT Bindings checkout this repository: 
 
-- [https://github.com/keesschollaart81/CaseOnline.Azure.WebJobs.Extensions.Mqtt](https://github.com/keesschollaart81/CaseOnline.Azure.WebJobs.Extensions.Mqtt)]!
+- [https://github.com/keesschollaart81/CaseOnline.Azure.WebJobs.Extensions.Mqtt](https://github.com/keesschollaart81/CaseOnline.Azure.WebJobs.Extensions.Mqtt)
