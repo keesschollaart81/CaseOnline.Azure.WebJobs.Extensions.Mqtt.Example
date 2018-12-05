@@ -48,7 +48,10 @@
             "name": "B1"
           },
           "properties": {
-            "name": "[variables('functionHostingplanAppName')]"
+            "name": "[variables('functionHostingplanAppName')]",
+            "siteConfig": {
+                "alwaysOn": true
+             }
           }
         },
         {
